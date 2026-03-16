@@ -1,25 +1,1791 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <style>
-    /* Existing styles here */
-    /* ─── HIDE CURSOR ON TOUCH DEVICES ─── */
-    @media (pointer: coarse) {
-      #cursor-trail,
-      #cursor-reticle {
-        display: none !important;
-      }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dhyey H — ECE Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f4ff;
+    --bg2: #f2edff;
+    --surface: #ffffff;
+    --surface2: #ede8ff;
+    --border: #ddd5f5;
+    --green: #6c47ff;
+    --green-dim: #a48aef;
+    --green-glow: rgba(108, 71, 255, 0.10);
+    --amber: #ff6b9d;
+    --text: #1e1340;
+    --text-muted: #7a6bab;
+    --text-dim: #b8aad8;
+    --mono: 'Space Mono', monospace;
+    --display: 'Bebas Neue', sans-serif;
+    --body: 'DM Sans', sans-serif;
+  }
 
-      * { cursor: auto !important; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    overflow-x: hidden;
+  }
+
+  /* PCB grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(108,71,255,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(108,71,255,0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 10% 15%, rgba(196,171,255,0.28) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 88% 12%, rgba(255,171,219,0.22) 0%, transparent 55%),
+      radial-gradient(ellipse 45% 50% at 82% 82%, rgba(171,214,255,0.18) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 40% at 22% 82%, rgba(171,255,220,0.14) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 48px;
+    background: rgba(247, 244, 255, 0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--green);
+    letter-spacing: 0.1em;
+  }
+
+  .nav-logo span { color: var(--text-muted); }
+
+  nav ul {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+
+  nav a {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    text-decoration: none;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    position: relative;
+  }
+
+  nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0;
+    width: 0; height: 1px;
+    background: var(--green);
+    transition: width 0.2s;
+  }
+
+  nav a:hover { color: var(--green); }
+  nav a:hover::after { width: 100%; }
+
+  /* SECTIONS */
+  section {
+    position: relative;
+    z-index: 1;
+    padding: 120px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* ─── HERO ─── */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 120px;
+    max-width: 100%;
+    padding-left: 10vw;
+    padding-right: 10vw;
+  }
+
+  .hero-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.2s forwards;
+  }
+
+  .hero-tag::before {
+    content: '';
+    width: 32px; height: 1px;
+    background: var(--green);
+  }
+
+  .hero-name {
+    font-family: var(--display);
+    font-size: clamp(72px, 12vw, 160px);
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    color: var(--text);
+    opacity: 0;
+    animation: fadeUp 0.6s 0.35s forwards;
+  }
+
+  .hero-name .accent { color: var(--green); }
+
+  .hero-title {
+    font-family: var(--mono);
+    font-size: clamp(13px, 2vw, 18px);
+    color: var(--text-muted);
+    margin-top: 20px;
+    letter-spacing: 0.08em;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.5s forwards;
+  }
+
+  .hero-title .sep { 
+    color: var(--green-dim); 
+    margin: 0 10px;
+  }
+
+  .hero-pitch {
+    max-width: 580px;
+    margin-top: 32px;
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--text);
+    font-weight: 300;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.65s forwards;
+  }
+
+  .hero-pitch strong { color: var(--green); font-weight: 500; }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    margin-top: 48px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.8s forwards;
+  }
+
+  .btn-primary {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    background: var(--green);
+    color: #fff;
+    border: none;
+    text-decoration: none;
+    font-weight: 700;
+    transition: transform 0.15s, box-shadow 0.15s;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(108, 71, 255, 0.35);
+  }
+
+  .btn-ghost {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 13px 32px;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    text-decoration: none;
+    transition: border-color 0.15s, color 0.15s;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  /* Scroll indicator */
+  .scroll-hint {
+    position: absolute;
+    bottom: 48px;
+    left: 10vw;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    animation: fadeUp 0.6s 1.1s forwards;
+  }
+
+  .scroll-line {
+    width: 48px; height: 1px;
+    background: var(--text-dim);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .scroll-line::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: var(--green);
+    animation: scanLine 2s 1.5s infinite;
+  }
+
+  /* PCB decorative traces in hero */
+  .hero-traces {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 45vw;
+    height: 80vh;
+    opacity: 0;
+    animation: fadeIn 1s 0.8s forwards;
+    pointer-events: none;
+  }
+
+  /* ─── SECTION HEADER ─── */
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+    margin-bottom: 64px;
+  }
+
+  .section-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 0.2em;
+  }
+
+  .section-title {
+    font-family: var(--display);
+    font-size: clamp(48px, 6vw, 80px);
+    color: var(--text);
+    letter-spacing: 0.02em;
+    line-height: 1;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ─── PROJECTS ─── */
+  #projects { padding-top: 100px; }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+
+  .project-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 40px;
+    transition: border-color 0.2s, background 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .project-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--green-glow);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .project-card:hover { border-color: var(--green); }
+  .project-card:hover::before { opacity: 1; }
+
+  .project-card.featured {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+  }
+
+  .project-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 0.2em;
+    margin-bottom: 16px;
+  }
+
+  .project-name {
+    font-family: var(--display);
+    font-size: clamp(28px, 3vw, 42px);
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .project-desc {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+
+  .tool-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  .tag.highlight {
+    border-color: var(--green-dim);
+    color: var(--green);
+    background: rgba(108,71,255,0.08);
+  }
+
+  .project-link {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .project-link::after {
+    content: '→';
+    transition: transform 0.2s;
+  }
+
+  .project-card:hover .project-link::after {
+    transform: translateX(4px);
+  }
+
+  /* Code snippet in featured project */
+  .code-block {
+    background: #eee9ff;
+    border: 1px solid var(--border);
+    padding: 24px;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--text-muted);
+    overflow-x: auto;
+    position: relative;
+    align-self: start;
+  }
+
+  .code-block::before {
+    content: attr(data-label);
+    position: absolute;
+    top: -1px;
+    left: 16px;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    background: var(--green);
+    color: #fff;
+    padding: 2px 8px;
+    font-weight: 700;
+  }
+
+  .code-kw { color: #d63384; }
+  .code-fn { color: var(--green); }
+  .code-cm { color: #a896d4; }
+  .code-str { color: #c2185b; }
+  .code-num { color: #1565c0; }
+
+  /* Project detail panels */
+  .project-detail {
+    display: none;
+  }
+
+  /* ─── SKILLS ─── */
+  #skills { padding-top: 100px; }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .skill-group {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 36px;
+  }
+
+  .skill-group-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--green);
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .skill-group-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .skill-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(180, 160, 230, 0.4);
+  }
+
+  .skill-item:last-child { border-bottom: none; }
+
+  .skill-name {
+    font-size: 14px;
+    color: var(--text);
+  }
+
+  .skill-bar {
+    width: 80px;
+    height: 4px;
+    background: var(--border);
+    position: relative;
+    overflow: hidden;
+    border-radius: 2px;
+  }
+
+  .skill-fill {
+    position: absolute;
+    top: 0; left: 0;
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), var(--green-dim));
+    width: var(--w);
+    transition: width 1.2s ease;
+    border-radius: 1px;
+  }
+
+  .skill-fill.animated { width: var(--w); }
+
+  /* ─── BLOG ─── */
+  #blog { padding-top: 100px; }
+
+  .blog-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .blog-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 32px;
+    transition: border-color 0.2s;
+    position: relative;
+  }
+
+  .blog-card:hover { border-color: var(--green); }
+
+  .blog-date {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.15em;
+    margin-bottom: 12px;
+  }
+
+  .blog-title {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+
+  .blog-excerpt {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .blog-arrow {
+    position: absolute;
+    bottom: 32px;
+    right: 32px;
+    font-family: var(--mono);
+    font-size: 16px;
+    color: var(--green-dim);
+    transition: color 0.2s, transform 0.2s;
+  }
+
+  .blog-card:hover .blog-arrow {
+    color: var(--green);
+    transform: translateX(4px);
+  }
+
+  /* ─── CONTACT ─── */
+  #contact { padding-top: 100px; padding-bottom: 160px; }
+
+  .contact-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .contact-headline {
+    font-family: var(--display);
+    font-size: clamp(56px, 7vw, 96px);
+    line-height: 0.95;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+
+  .contact-headline .green { color: var(--green); }
+
+  .contact-sub {
+    font-size: 16px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-bottom: 48px;
+  }
+
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .contact-link:hover {
+    border-color: var(--green);
+    background: var(--green-glow);
+  }
+
+  .contact-link-icon {
+    width: 36px; height: 36px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .contact-link-info { flex: 1; }
+
+  .contact-link-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  .contact-link-val {
+    font-size: 15px;
+    color: var(--text);
+    margin-top: 2px;
+  }
+
+  .contact-link-arrow {
+    font-family: var(--mono);
+    color: var(--green-dim);
+    transition: color 0.2s, transform 0.2s;
+  }
+
+  .contact-link:hover .contact-link-arrow {
+    color: var(--green);
+    transform: translateX(4px);
+  }
+
+  /* Resume download */
+  .resume-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 36px;
+    margin-top: 32px;
+  }
+
+  .resume-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--green);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .resume-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  footer p {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+  }
+
+  footer span { color: var(--green); }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes scanLine {
+    0% { left: -100%; }
+    100% { left: 100%; }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.7s, transform 0.7s;
+  }
+  .reveal.will-animate {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  .reveal.will-animate.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ─── MODAL / OVERLAY ─── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(242, 237, 255, 0.98);
+    z-index: 200;
+    display: none;
+    overflow-y: auto;
+    padding: 80px 48px;
+    backdrop-filter: blur(8px);
+  }
+
+  .modal-overlay.open { display: block; }
+
+  .modal-close {
+    position: fixed;
+    top: 24px;
+    right: 48px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    background: none;
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    transition: border-color 0.2s, color 0.2s;
+    z-index: 201;
+  }
+
+  .modal-close:hover {
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  .modal-content {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .modal-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 0.2em;
+    margin-bottom: 16px;
+  }
+
+  .modal-title {
+    font-family: var(--display);
+    font-size: 64px;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 32px;
+  }
+
+  .modal-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 40px;
+  }
+
+  .modal-section-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--green);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .modal-text {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.8;
+  }
+
+  .modal-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 40px 0;
+  }
+
+  /* Stat boxes */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin: 32px 0;
+  }
+
+  .stat-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 24px;
+  }
+
+  .stat-val {
+    font-family: var(--display);
+    font-size: 40px;
+    color: var(--green);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    nav ul { gap: 20px; }
+    section { padding: 80px 24px; }
+    #hero { padding-left: 24px; padding-right: 24px; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .project-card.featured { grid-template-columns: 1fr; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .blog-list { grid-template-columns: 1fr; }
+    .contact-inner { grid-template-columns: 1fr; gap: 48px; }
+    .modal-body { grid-template-columns: 1fr; }
+    .modal-overlay { padding: 80px 24px; }
+    .hero-traces { display: none; }
+    footer { flex-direction: column; gap: 8px; text-align: center; }
+  }
+
+  /* ─── STATUS DOT ─── */
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+  }
+
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  .waveform-viz {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    height: 40px;
+    padding: 4px 0;
+  }
+
+  .wave-bar {
+    width: 3px;
+    background: var(--green);
+    border-radius: 1px;
+    opacity: 0.7;
+    animation: waveAnim 1.2s ease-in-out infinite;
+  }
+
+  @keyframes waveAnim {
+    0%, 100% { transform: scaleY(0.3); }
+    50% { transform: scaleY(1); }
+  }
+
+  /* ─── CUSTOM CURSOR ─── */
+  @media (pointer: fine) {
+    * { cursor: none !important; }
+
+    /* Canvas for the PCB trace trail */
+    #cursor-trail {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9996;
+      transition: opacity 0.4s;
     }
-  </style>
+    #cursor-trail.hidden { opacity: 0; }
+
+    /* Main reticle SVG */
+    #cursor-reticle {
+      position: fixed;
+      top: 0; left: 0;
+      width: 48px; height: 48px;
+      pointer-events: none;
+      z-index: 9999;
+      color: var(--green);
+      transform: translate(-50%, -50%);
+      will-change: transform;
+      overflow: visible;
+      transition: color 0.2s, opacity 0.4s;
+    }
+    #cursor-reticle.hidden { opacity: 0; }
+
+    /* Outer ring: slow spin */
+    .cur-outer {
+      animation: cur-spin 12s linear infinite;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+    @keyframes cur-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Inner group: slight scale on hover */
+    .cur-inner {
+      transition: transform 0.22s ease;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+    #cursor-reticle.hover .cur-inner { transform: scale(1.2); }
+
+    /* Trace lines: draw outward on hover via dashoffset */
+    .cur-trace {
+      stroke-dasharray: 22;
+      stroke-dashoffset: 22;
+      transition: stroke-dashoffset 0.35s ease;
+    }
+    #cursor-reticle.hover .cur-trace { stroke-dashoffset: 0; }
+
+    /* Click: flash to accent pink */
+    #cursor-reticle.click { color: var(--amber); }
+
+    /* Voltage readout label: fades in on hover */
+    .cur-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 6px;
+      fill: currentColor;
+      opacity: 0;
+      transition: opacity 0.25s;
+      letter-spacing: 0.05em;
+    }
+    #cursor-reticle.hover .cur-label { opacity: 0.75; }
+    #cursor-reticle.click .cur-label { opacity: 0; }
+  }
+  /* ─── HIDE CURSOR ON TOUCH DEVICES ─── */
+@media (pointer: coarse) {
+  #cursor-trail,
+  #cursor-reticle {
+    display: none !important;
+  }
+
+  * { cursor: auto !important; }
+}
+</style>
 </head>
 <body>
-  <div id="cursor-trail"></div>
-  <div id="cursor-reticle"></div>
-  <!-- Content of the file -->
+
+<!-- Custom Cursor -->
+<canvas id="cursor-trail" class="hidden"></canvas>
+<svg id="cursor-reticle" class="hidden" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Hover trace lines: shoot out from each cardinal point on hover -->
+  <!-- North -->
+  <line class="cur-trace" x1="30" y1="5" x2="30" y2="-17"
+    stroke="currentColor" stroke-width="1.2" opacity="0.75"/>
+  <!-- South -->
+  <line class="cur-trace" x1="30" y1="55" x2="30" y2="77"
+    stroke="currentColor" stroke-width="1.2" opacity="0.75"/>
+  <!-- East -->
+  <line class="cur-trace" x1="55" y1="30" x2="77" y2="30"
+    stroke="currentColor" stroke-width="1.2" opacity="0.75"/>
+  <!-- West -->
+  <line class="cur-trace" x1="5" y1="30" x2="-17" y2="30"
+    stroke="currentColor" stroke-width="1.2" opacity="0.75"/>
+
+  <!-- Voltage readout label (fades in on hover) -->
+  <text class="cur-label" x="33" y="20">3.3V</text>
+
+  <!-- Inner group: center via dot + annular ring -->
+  <g class="cur-inner">
+    <!-- Via drill hole -->
+    <circle cx="30" cy="30" r="2.8" fill="currentColor"/>
+    <!-- Via annular ring -->
+    <circle cx="30" cy="30" r="7.5"
+      fill="none" stroke="currentColor" stroke-width="1.5"/>
+    <!-- Tiny SMD pad square overlay -->
+    <rect x="27" y="27" width="6" height="6"
+      fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.45"/>
+  </g>
+
+  <!-- Outer spinning measurement ring -->
+  <g class="cur-outer">
+    <!--
+      Outer ring r=17, circumference≈106.8.
+      4 gaps at cardinal points: each solid=21.96, gap=4.74
+      dashoffset=24.33 centers a gap at the path start (E/3-o'clock).
+    -->
+    <circle cx="30" cy="30" r="17"
+      fill="none" stroke="currentColor" stroke-width="1"
+      stroke-dasharray="21.96 4.74" stroke-dashoffset="24.33"/>
+    <!-- Cardinal tick marks (N/S/E/W) just beyond the outer ring -->
+    <line x1="30" y1="11.5" x2="30" y2="5.5"
+      stroke="currentColor" stroke-width="1.5"/>
+    <line x1="30" y1="48.5" x2="30" y2="54.5"
+      stroke="currentColor" stroke-width="1.5"/>
+    <line x1="48.5" y1="30" x2="54.5" y2="30"
+      stroke="currentColor" stroke-width="1.5"/>
+    <line x1="11.5" y1="30" x2="5.5" y2="30"
+      stroke="currentColor" stroke-width="1.5"/>
+    <!-- 45° diagonal tick marks (smaller) -->
+    <line x1="42" y1="18" x2="44.5" y2="15.5"
+      stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+    <line x1="42" y1="42" x2="44.5" y2="44.5"
+      stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+    <line x1="18" y1="42" x2="15.5" y2="44.5"
+      stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+    <line x1="18" y1="18" x2="15.5" y2="15.5"
+      stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+  </g>
+</svg>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">DH<span>_</span>portfolio<span>.v1</span></div>
+  <ul>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
+<div id="hero" style="position:relative;">
+
+  <!-- PCB traces SVG decoration -->
+  <svg class="hero-traces" viewBox="0 0 500 600" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M500 100 L380 100 L380 180 L300 180 L300 280 L220 280 L220 380 L140 380 L140 460 L60 460" stroke="#c5b8f7" stroke-width="2"/>
+    <path d="M500 200 L420 200 L420 300 L340 300 L340 400 L260 400" stroke="#d4caf9" stroke-width="2"/>
+    <path d="M500 350 L460 350 L460 260 L380 260 L380 160" stroke="#bfb1f5" stroke-width="2"/>
+    <path d="M500 450 L440 450 L440 360 L360 360 L360 460 L280 460 L280 500" stroke="#c5b8f7" stroke-width="1.5"/>
+    <circle cx="380" cy="100" r="5" fill="#ddd5f8" stroke="#9b80ef" stroke-width="1"/>
+    <circle cx="300" cy="180" r="4" fill="#ddd5f8" stroke="#9b80ef" stroke-width="1"/>
+    <circle cx="220" cy="280" r="5" fill="#ddd5f8" stroke="#9b80ef" stroke-width="1"/>
+    <circle cx="380" cy="260" r="4" fill="#ddd5f8" stroke="#9b80ef" stroke-width="1"/>
+    <circle cx="460" cy="350" r="5" fill="#a78bfa" stroke="#6c47ff" stroke-width="1" opacity="0.9"/>
+    <circle cx="340" cy="300" r="4" fill="#ddd5f8" stroke="#9b80ef" stroke-width="1"/>
+    <circle cx="140" cy="380" r="5" fill="#ddd5f8" stroke="#9b80ef" stroke-width="1"/>
+    <circle cx="440" cy="450" r="4" fill="#a78bfa" stroke="#6c47ff" stroke-width="1" opacity="0.6"/>
+    <!-- IC chip outline -->
+    <rect x="160" y="220" width="80" height="50" stroke="#c5b8f7" stroke-width="1.5" fill="none"/>
+    <text x="200" y="250" text-anchor="middle" fill="#9b80ef" font-family="Space Mono" font-size="8">IC</text>
+    <!-- pads -->
+    <rect x="155" y="228" width="5" height="6" fill="#ddd5f8"/>
+    <rect x="155" y="238" width="5" height="6" fill="#ddd5f8"/>
+    <rect x="155" y="248" width="5" height="6" fill="#ddd5f8"/>
+    <rect x="240" y="228" width="5" height="6" fill="#ddd5f8"/>
+    <rect x="240" y="238" width="5" height="6" fill="#ddd5f8"/>
+    <rect x="240" y="248" width="5" height="6" fill="#ddd5f8"/>
+    <!-- capacitor symbols -->
+    <line x1="320" y1="180" x2="320" y2="200" stroke="#c5b8f7" stroke-width="1.5"/>
+    <line x1="315" y1="200" x2="325" y2="200" stroke="#6c47ff" stroke-width="2" opacity="0.6"/>
+    <line x1="315" y1="204" x2="325" y2="204" stroke="#6c47ff" stroke-width="2" opacity="0.6"/>
+    <line x1="320" y1="204" x2="320" y2="220" stroke="#c5b8f7" stroke-width="1.5"/>
+    <!-- resistor symbol -->
+    <line x1="70" y1="460" x2="80" y2="460" stroke="#c5b8f7" stroke-width="1.5"/>
+    <rect x="80" y="456" width="20" height="8" stroke="#b8a8f2" stroke-width="1" fill="none"/>
+    <line x1="100" y1="460" x2="110" y2="460" stroke="#c5b8f7" stroke-width="1.5"/>
+    <!-- signal lines -->
+    <path d="M460 200 Q470 200 470 210 Q470 220 480 220 Q490 220 490 230 Q490 240 500 240" stroke="#6c47ff" stroke-width="1" opacity="0.4" stroke-dasharray="4 4"/>
+    <!-- VCC label -->
+    <text x="390" y="95" fill="#9b80ef" font-family="Space Mono" font-size="7">VDD</text>
+    <text x="270" y="295" fill="#9b80ef" font-family="Space Mono" font-size="7">GND</text>
+    <text x="350" y="465" fill="#9b80ef" font-family="Space Mono" font-size="7">CLK</text>
+  </svg>
+
+  <div class="hero-tag">
+    <span class="status-dot"></span>
+    Electronics &amp; Communication Engineer
+  </div>
+
+  <h1 class="hero-name">
+    DHYEY<br><span class="accent">Hingarajiya</span>
+  </h1>
+
+  <p class="hero-title">
+    VLSI<span class="sep">/</span>Embedded Systems<span class="sep">/</span>Signal Processing
+  </p>
+
+  <p class="hero-pitch">
+    I design digital systems <strong>from RTL to physical design</strong> and build signal-processing based embedded applications.
+  </p>
+
+  <div class="hero-actions">
+    <a href="https://drive.google.com/file/d/10wR99kdFGOb1ZS6pyiwlSakMgGRg3TbI/view?usp=sharing" class="btn-primary"; return false;">↓ Resume</a>
+    <a href="#projects" class="btn-ghost">Projects</a>
+    <a href="https://github.com/dhyey-hingarajiya" class="btn-ghost" target="_blank">GitHub ↗</a>
+    <a href="#contact" class="btn-ghost">Contact</a>
+  </div>
+<br>
+<br>
+<br>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    Scroll to explore
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PROJECTS ═══════════════════════════════ -->
+<section id="projects">
+  <div class="section-header reveal">
+    <span class="section-num">01 //</span>
+    <h2 class="section-title">PROJECTS</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="projects-grid">
+
+    <!-- Featured: RTL to GDSII -->
+    <div class="project-card featured reveal" onclick="openModal('p1')">
+      <div>
+        <div class="project-num">01 — VLSI DESIGN</div>
+        <h3 class="project-name">RTL to GDSII<br>8-bit Ripple Carry Adder</h3>
+        <p class="project-desc">Full ASIC implementation flow from behavioral Verilog through synthesis, place & route, and timing sign-off. Achieved timing closure with zero violations.</p>
+        <div class="tool-tags">
+          <span class="tag highlight">Verilog</span>
+          <span class="tag highlight">Synopsys VCS</span>
+          <span class="tag">Design Compiler</span>
+          <span class="tag">ICC2</span>
+          <span class="tag">PrimeTime</span>
+        </div>
+        <a class="project-link" href="#">View Full Project</a>
+      </div>
+      <div class="code-block" data-label="RTL SNIPPET">
+<span class="code-cm">// 8-bit Ripple Carry Adder</span>
+<span class="code-kw">module</span> <span class="code-fn">rca_8bit</span> (
+  <span class="code-kw">input</span>  [<span class="code-num">7</span>:<span class="code-num">0</span>] A, B,
+  <span class="code-kw">input</span>       Cin,
+  <span class="code-kw">output</span> [<span class="code-num">7</span>:<span class="code-num">0</span>] Sum,
+  <span class="code-kw">output</span>      Cout
+);
+
+<span class="code-kw">wire</span> [<span class="code-num">6</span>:<span class="code-num">0</span>] carry;
+
+<span class="code-fn">fa</span> fa0 (A[<span class="code-num">0</span>], B[<span class="code-num">0</span>], Cin,     Sum[<span class="code-num">0</span>], carry[<span class="code-num">0</span>]);
+<span class="code-fn">fa</span> fa1 (A[<span class="code-num">1</span>], B[<span class="code-num">1</span>], carry[<span class="code-num">0</span>], Sum[<span class="code-num">1</span>], carry[<span class="code-num">1</span>]);
+<span class="code-cm">// ... instantiate fa2–fa6</span>
+<span class="code-fn">fa</span> fa7 (A[<span class="code-num">7</span>], B[<span class="code-num">7</span>], carry[<span class="code-num">6</span>], Sum[<span class="code-num">7</span>], Cout);
+
+<span class="code-kw">endmodule</span></div>
+    </div>
+
+    <!-- DSP Earthquake -->
+    <div class="project-card reveal" onclick="openModal('p2')">
+      <div class="project-num">02 — DSP / MATLAB</div>
+      <h3 class="project-name">Earthquake Signal Predictor</h3>
+      <p class="project-desc">Seismic signal preprocessing, bandpass filtering, and p-wave onset detection algorithm implemented in MATLAB. Distinguishes seismic events from noise.</p>
+      <div class="tool-tags">
+        <span class="tag highlight">MATLAB</span>
+        <span class="tag">Signal Processing</span>
+        <span class="tag">Filtering</span>
+        <span class="tag">FFT</span>
+      </div>
+      <!-- Waveform visualizer -->
+      <div class="waveform-viz" style="margin: 20px 0;">
+        <div class="wave-bar" style="height:12px; animation-delay:0s;"></div>
+        <div class="wave-bar" style="height:20px; animation-delay:0.1s;"></div>
+        <div class="wave-bar" style="height:8px; animation-delay:0.2s;"></div>
+        <div class="wave-bar" style="height:32px; animation-delay:0.15s; background: var(--amber); opacity:1;"></div>
+        <div class="wave-bar" style="height:36px; animation-delay:0.1s; background: var(--amber); opacity:1;"></div>
+        <div class="wave-bar" style="height:28px; animation-delay:0.05s; background: var(--amber); opacity:1;"></div>
+        <div class="wave-bar" style="height:22px; animation-delay:0.2s; background: var(--amber);"></div>
+        <div class="wave-bar" style="height:16px; animation-delay:0.3s;"></div>
+        <div class="wave-bar" style="height:10px; animation-delay:0.4s;"></div>
+        <div class="wave-bar" style="height:14px; animation-delay:0.35s;"></div>
+        <div class="wave-bar" style="height:6px; animation-delay:0.45s;"></div>
+        <div class="wave-bar" style="height:10px; animation-delay:0.5s;"></div>
+      </div>
+      <a class="project-link" href="#">View Full Project</a>
+    </div>
+
+    <!-- Drone Stabilization -->
+    <div class="project-card reveal" onclick="openModal('p3')">
+      <div class="project-num">03 — CONTROL SYSTEMS</div>
+      <h3 class="project-name">Drone Stabilization System</h3>
+      <p class="project-desc">PID controller design for quadrotor attitude stabilization. Tuned using Simulink response analysis; achieves &lt;2° steady-state error with minimal overshoot.</p>
+      <div class="tool-tags">
+        <span class="tag highlight">Simulink</span>
+        <span class="tag">MATLAB</span>
+        <span class="tag">PID Control</span>
+        <span class="tag">System Response</span>
+      </div>
+      <div style="margin: 20px 0; font-family: var(--mono); font-size: 11px; color: var(--text-dim); line-height: 1.8;">
+        <span style="color:var(--text-muted);">Kp</span> = 2.4 &nbsp;
+        <span style="color:var(--text-muted);">Ki</span> = 0.08 &nbsp;
+        <span style="color:var(--text-muted);">Kd</span> = 0.6<br>
+        <span style="color:var(--green);">Settling:</span> 1.2s &nbsp;
+        <span style="color:var(--amber);">Overshoot:</span> 8.3%
+      </div>
+      <a class="project-link" href="#">View Full Project</a>
+    </div>
+
+    <!-- Fall Detection -->
+    <div class="project-card reveal" onclick="openModal('p4')">
+      <div class="project-num">04 — EMBEDDED / SENSORS</div>
+      <h3 class="project-name">Fall Detection System</h3>
+      <p class="project-desc">Real-time fall detection using accelerometer/gyroscope fusion. Threshold-based classification algorithm with low false-positive rate for assistive applications.</p>
+      <div class="tool-tags">
+        <span class="tag highlight">Accelerometer</span>
+        <span class="tag highlight">Gyroscope</span>
+        <span class="tag">Sensor Fusion</span>
+        <span class="tag">Embedded C</span>
+      </div>
+      <div style="margin: 20px 0;">
+        <div style="display:flex; gap:16px; font-family:var(--mono); font-size:11px;">
+          <div style="text-align:center;">
+            <div style="font-size:28px; color:var(--green); font-family:var(--display); line-height:1;">94%</div>
+            <div style="color:var(--text-muted);">Accuracy</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:28px; color:var(--amber); font-family:var(--display); line-height:1;">&lt;3%</div>
+            <div style="color:var(--text-muted);">False Pos</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:28px; color:var(--green); font-family:var(--display); line-height:1;">50ms</div>
+            <div style="color:var(--text-muted);">Latency</div>
+          </div>
+        </div>
+      </div>
+      <a class="project-link" href="#">View Full Project</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ SKILLS ═══════════════════════════════ -->
+<section id="skills">
+  <div class="section-header reveal">
+    <span class="section-num">02 //</span>
+    <h2 class="section-title">SKILLS</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="skills-grid">
+    <div class="skill-group reveal">
+      <div class="skill-group-title">Hardware / VLSI</div>
+      <div class="skill-item">
+        <span class="skill-name">Verilog / RTL Design</span>
+        <div class="skill-bar"><div class="skill-fill" style="--w:90%"></div></div>
+      </div>
+      <div class="skill-item">
+        <span class="skill-name">Static Timing Analysis</span>
+        <div class="skill-bar"><div class="skill-fill" style="--w:85%"></div></div>
+      </div>
+      <div class="skill-item">
+        <span class="skill-name">Logic Synthesis</span>
+        <div class="skill-bar"><div class="skill-fill" style="--w:80%"></div></div>
+      </div>
+      <div class="skill-item">
+        <span class="skill-name">Physical Design</span>
+        <div class="skill-bar"><div class="skill-fill" style="--w:75%"></div></div>
+      </div>
+      <div class="skill-item">
+        <span class="skill-name">Digital Signal Processing</span>
+        <div class="skill-bar"><div class="skill-fill" style="--w:85%"></div></div>
+      </div>
+    </div>
+
+    <div class="skill-group reveal" style="transition-delay:0.1s">
+      <div class="skill-group-title">Tools</div>
+      <div class="skill-item">
+        <span class="skill-name">Synopsys VCS</span>
+        <div class="skill-bar"><div class="skill-fill" style="--w:88%"></div></div>
+      </div>
+      <div class="skill-item">
+        <span class="skill-name">Design Compiler</span>
+        <div class="skill-bar"><div class="skill-fill" style="--w:82%"></div></div>
+      </div>
+      <div class="skill-item">
+        <span class="skill-name">ICC2 (P&R)</span>
+        <div class="skill-bar"><div class="skill-fill" style="--w:78%"></div></div>
+      </div>
+      <div class="skill-item">
+        <span class="skill-name">PrimeTime (STA)</span>
+        <div class="skill-bar"><div class="skill-fill" style="--w:80%"></div></div>
+      </div>
+      <div class="skill-item">
+        <span class="skill-name">MATLAB / Simulink</span>
+        <div class="skill-bar"><div class="skill-fill" style="--w:90%"></div></div>
+      </div>
+    </div>
+
+    <div class="skill-group reveal" style="transition-delay:0.2s">
+      <div class="skill-group-title">Programming</div>
+      <div class="skill-item">
+        <span class="skill-name">Python</span>
+        <div class="skill-bar"><div class="skill-fill" style="--w:85%"></div></div>
+      </div>
+      <div class="skill-item">
+        <span class="skill-name">C / Embedded C</span>
+        <div class="skill-bar"><div class="skill-fill" style="--w:80%"></div></div>
+      </div>
+      <div class="skill-item">
+        <span class="skill-name">Java</span>
+        <div class="skill-bar"><div class="skill-fill" style="--w:45%"></div></div>
+      </div>
+      <div class="skill-item">
+        <span class="skill-name">Bash / TCL Scripting</span>
+        <div class="skill-bar"><div class="skill-fill" style="--w:70%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ CONTACT ═══════════════════════════════ -->
+<section id="contact">
+  <div class="section-header reveal">
+    <span class="section-num">03 //</span>
+    <h2 class="section-title">CONTACT</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="contact-inner">
+    <div class="reveal">
+      <h2 class="contact-headline">LET'S<br><span class="green">BUILD</span><br>TOGETHER.</h2>
+      <p class="contact-sub">Open to internships, research collaborations, and project discussions in VLSI, embedded systems, or signal processing.</p>
+      <div class="status">
+        <div class="status-dot"></div>
+        Available for opportunities
+      </div>
+    </div>
+
+    <div class="reveal" style="transition-delay:0.1s">
+      <div class="contact-links">
+        <a href="mailto:dhyeyb21@gmail.com" class="contact-link">
+          <div class="contact-link-icon">✉</div>
+          <div class="contact-link-info">
+            <div class="contact-link-label">Email</div>
+            <div class="contact-link-val">dhyeyb21@gmail.com</div>
+          </div>
+          <span class="contact-link-arrow">→</span>
+        </a>
+        <a href="https://linkedin.com/in/dhyeyh7" class="contact-link" target="_blank">
+          <div class="contact-link-icon">in</div>
+          <div class="contact-link-info">
+            <div class="contact-link-label">LinkedIn</div>
+            <div class="contact-link-val">linkedin.com/in/dhyeyh7</div>
+          </div>
+          <span class="contact-link-arrow">→</span>
+        </a>
+        <a href="https://github.com/dhyey-hingarajiya" class="contact-link" target="_blank">
+          <div class="contact-link-icon">&lt;/&gt;</div>
+          <div class="contact-link-info">
+            <div class="contact-link-label">GitHub</div>
+            <div class="contact-link-val">github.com/dhyey-hingarajiya</div>
+          </div>
+          <span class="contact-link-arrow">→</span>
+        </a>
+      </div>
+
+      <div class="resume-box reveal" style="transition-delay:0.2s">
+        <div class="resume-title">// Resume</div>
+        <p class="resume-desc">Full CV including coursework, publications, and technical project details in PDF format.</p>
+        <a href="https://drive.google.com/file/d/10wR99kdFGOb1ZS6pyiwlSakMgGRg3TbI/view?usp=sharing" class="btn-primary" download>↓ Download Resume</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 <span>Dhyey H.</span> — Electronics &amp; Communication Engineer</p>
+  <p>Built <span>//</span> RTL to pixels</p>
+</footer>
+
+<!-- ═══════════════════════════════ MODALS ═══════════════════════════════ -->
+
+<!-- Project 1 Modal -->
+<div class="modal-overlay" id="modal-p1">
+  <button class="modal-close" onclick="closeModal()">✕ CLOSE</button>
+  <div class="modal-content">
+    <div class="modal-tag">01 — VLSI DESIGN</div>
+    <h2 class="modal-title">RTL TO GDSII<br>8-BIT ADDER</h2>
+
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-val">0</div>
+        <div class="stat-label">Timing Violations</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">1.2ns</div>
+        <div class="stat-label">Critical Path</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">124μm²</div>
+        <div class="stat-label">Core Area</div>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <div>
+        <div class="modal-section-title">// Design Overview</div>
+        <p class="modal-text">Implemented a full 8-bit ripple carry adder through the complete ASIC flow. The design was specified in synthesizable Verilog RTL, verified with directed and random testbenches in Synopsys VCS, synthesized to a 45nm standard cell library using Design Compiler, and then taken through place & route in ICC2.</p>
+      </div>
+      <div>
+        <div class="modal-section-title">// Timing & Constraints</div>
+        <p class="modal-text">Applied 800MHz clock constraint with 30% uncertainty margin. PrimeTime STA confirmed zero setup/hold violations post-route. Critical path runs through the carry chain of the LSB full adder to MSB. Area and power tradeoffs explored by comparing flat vs. hierarchical synthesis strategies.</p>
+      </div>
+    </div>
+
+    <div class="modal-divider"></div>
+
+    <div class="code-block" data-label="VERILOG — FULL ADDER MODULE">
+<span class="code-kw">module</span> <span class="code-fn">fa</span> (
+  <span class="code-kw">input</span>  A, B, Cin,
+  <span class="code-kw">output</span> Sum, Cout
+);
+  <span class="code-kw">assign</span> Sum  = A ^ B ^ Cin;
+  <span class="code-kw">assign</span> Cout = (A &amp; B) | (B &amp; Cin) | (A &amp; Cin);
+<span class="code-kw">endmodule</span>
+
+<span class="code-cm">// Synthesis report excerpt</span>
+<span class="code-cm">// Total cell area: 124.13 (normalized)</span>
+<span class="code-cm">// Combinational area: 124.13</span>
+<span class="code-cm">// Critical path: 1.21 ns</span>
+<span class="code-cm">// Power: 58.3 µW (dynamic + leakage)</span></div>
+
+    <div class="modal-divider"></div>
+    <div class="modal-section-title">// Tools Used</div>
+    <div class="tool-tags" style="margin-top:12px">
+      <span class="tag highlight">Verilog</span>
+      <span class="tag highlight">Synopsys VCS</span>
+      <span class="tag highlight">Design Compiler</span>
+      <span class="tag highlight">ICC2</span>
+      <span class="tag highlight">PrimeTime</span>
+      <span class="tag">45nm PDK</span>
+      <span class="tag">TCL Scripting</span>
+    </div>
+  </div>
+</div>
+
+<!-- Project 2 Modal -->
+<div class="modal-overlay" id="modal-p2">
+  <button class="modal-close" onclick="closeModal()">✕ CLOSE</button>
+  <div class="modal-content">
+    <div class="modal-tag">02 — DSP / MATLAB</div>
+    <h2 class="modal-title">EARTHQUAKE<br>SIGNAL PREDICTOR</h2>
+
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-val">50Hz</div>
+        <div class="stat-label">Sampling Rate</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">0.1–10</div>
+        <div class="stat-label">Band (Hz)</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">91%</div>
+        <div class="stat-label">Detection Acc.</div>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <div>
+        <div class="modal-section-title">// Signal Pipeline</div>
+        <p class="modal-text">Seismic signals were loaded from raw sensor CSV data. Preprocessing included DC offset removal, normalization, and segment windowing. A 4th-order Butterworth bandpass filter (0.1–10 Hz) was designed to isolate the P-wave frequency band from broadband noise.</p>
+      </div>
+      <div>
+        <div class="modal-section-title">// Detection Algorithm</div>
+        <p class="modal-text">Short-Term Average / Long-Term Average (STA/LTA) detector used to identify P-wave onset. FFT-based spectral analysis confirmed event signatures. Results compared against USGS ground truth catalog to validate detection accuracy across varying magnitude events.</p>
+      </div>
+    </div>
+
+    <div class="modal-divider"></div>
+
+    <div class="code-block" data-label="MATLAB — BANDPASS FILTER DESIGN">
+<span class="code-cm">% Butterworth bandpass: 0.1 – 10 Hz</span>
+fs = <span class="code-num">50</span>;
+[b, a] = <span class="code-fn">butter</span>(<span class="code-num">4</span>, [<span class="code-num">0.1</span> <span class="code-num">10</span>] / (fs/<span class="code-num">2</span>), <span class="code-str">'bandpass'</span>);
+x_filt = <span class="code-fn">filtfilt</span>(b, a, x_raw);
+
+<span class="code-cm">% STA/LTA detector</span>
+sta_len = <span class="code-num">5</span>;   lta_len = <span class="code-num">30</span>;   threshold = <span class="code-num">3.5</span>;
+ratio = <span class="code-fn">stalta</span>(x_filt, sta_len, lta_len);
+events = ratio > threshold;</div>
+  </div>
+</div>
+
+<!-- Project 3 Modal -->
+<div class="modal-overlay" id="modal-p3">
+  <button class="modal-close" onclick="closeModal()">✕ CLOSE</button>
+  <div class="modal-content">
+    <div class="modal-tag">03 — CONTROL SYSTEMS</div>
+    <h2 class="modal-title">DRONE<br>STABILIZATION</h2>
+
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-val">1.2s</div>
+        <div class="stat-label">Settling Time</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">8.3%</div>
+        <div class="stat-label">Overshoot</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">&lt;2°</div>
+        <div class="stat-label">Steady-State Error</div>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <div>
+        <div class="modal-section-title">// System Model</div>
+        <p class="modal-text">Quadrotor modeled as a 6-DOF rigid body in Simulink. Attitude dynamics linearized around hover equilibrium. Separate PID controllers designed for roll, pitch, and yaw axes. Plant transfer function derived from physical parameters (mass, inertia, thrust coefficient).</p>
+      </div>
+      <div>
+        <div class="modal-section-title">// PID Tuning</div>
+        <p class="modal-text">Gains tuned using Ziegler-Nichols method as initial estimate, then refined via Simulink's Response Optimizer to minimize ITAE criterion. Bode and Nyquist plots confirmed gain margin &gt;12 dB and phase margin &gt;60° for robust stability. Step response validated against design specs.</p>
+      </div>
+    </div>
+
+    <div class="modal-divider"></div>
+    <div class="modal-section-title">// PID Parameters</div>
+    <div class="code-block" data-label="GAINS" style="margin-top:16px">
+<span class="code-cm">% Roll / Pitch Controller</span>
+Kp = <span class="code-num">2.4</span>;   Ki = <span class="code-num">0.08</span>;   Kd = <span class="code-num">0.6</span>;
+
+<span class="code-cm">% Yaw Controller</span>
+Kp_yaw = <span class="code-num">1.8</span>;   Ki_yaw = <span class="code-num">0.05</span>;   Kd_yaw = <span class="code-num">0.4</span>;
+
+<span class="code-cm">% Performance</span>
+<span class="code-cm">% Settling: 1.2s | Overshoot: 8.3% | SS Error: &lt;2°</span></div>
+  </div>
+</div>
+
+<!-- Project 4 Modal -->
+<div class="modal-overlay" id="modal-p4">
+  <button class="modal-close" onclick="closeModal()">✕ CLOSE</button>
+  <div class="modal-content">
+    <div class="modal-tag">04 — EMBEDDED / SENSORS</div>
+    <h2 class="modal-title">FALL DETECTION<br>SYSTEM</h2>
+
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-val">94%</div>
+        <div class="stat-label">Accuracy</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">&lt;3%</div>
+        <div class="stat-label">False Positive</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">50ms</div>
+        <div class="stat-label">Detection Latency</div>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <div>
+        <div class="modal-section-title">// System Architecture</div>
+        <p class="modal-text">MPU-6050 IMU (3-axis accelerometer + gyroscope) interfaced via I²C to a microcontroller. Sensor fusion using complementary filter combines accelerometer and gyroscope data to compute accurate tilt angle. Raw acceleration magnitude computed from all three axes for threshold comparison.</p>
+      </div>
+      <div>
+        <div class="modal-section-title">// Detection Algorithm</div>
+        <p class="modal-text">Fall characterized by three phases: free-fall (low g-force), impact (high g-force spike), and post-fall posture (tilt angle deviation). Algorithm gates on all three conditions sequentially to minimize false positives from normal activities like sitting or jumping.</p>
+      </div>
+    </div>
+
+    <div class="modal-divider"></div>
+    <div class="code-block" data-label="EMBEDDED C — FALL DETECTION LOGIC">
+<span class="code-cm">// Compute acceleration magnitude</span>
+float acc_mag = <span class="code-fn">sqrt</span>(ax*ax + ay*ay + az*az);
+
+<span class="code-kw">if</span> (acc_mag &lt; FREEFALL_THRESHOLD) {
+  fall_state = FREEFALL;
+} <span class="code-kw">else if</span> (fall_state == FREEFALL
+         &amp;&amp; acc_mag &gt; IMPACT_THRESHOLD) {
+  fall_state = IMPACT;
+  <span class="code-fn">start_posture_timer</span>();
+} <span class="code-kw">else if</span> (fall_state == IMPACT
+         &amp;&amp; tilt_angle &gt; TILT_THRESHOLD) {
+  <span class="code-fn">trigger_alert</span>(); <span class="code-cm">// FALL CONFIRMED</span>
+}</div>
+  </div>
+</div>
+
+<!-- JS -->
+<script>
+  // ─── CUSTOM CURSOR: PCB Oscilloscope Probe ───────────────────────
+  (function () {
+    const reticle = document.getElementById('cursor-reticle');
+    const trail   = document.getElementById('cursor-trail');
+    if (!reticle || !trail) return;
+
+    // ── Canvas trail setup ──────────────────────────────────────────
+    const ctx = trail.getContext('2d');
+    function resizeCanvas() {
+      trail.width  = window.innerWidth;
+      trail.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas, { passive: true });
+
+    // ── State ───────────────────────────────────────────────────────
+    let mouseX = 0, mouseY = 0;
+    const trailPts = [];
+    let lastSX = -999, lastSY = -999;
+    const TRAIL_MS   = 750;
+    const SAMPLE_PX  = 18;
+
+    // ── Mouse tracking ──────────────────────────────────────────────
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+
+      reticle.classList.remove('hidden');
+      trail.classList.remove('hidden');
+      reticle.style.transform =
+        `translate(${mouseX}px,${mouseY}px) translate(-50%,-50%)`;
+
+      // Sample points for the trail
+      const dx = mouseX - lastSX, dy = mouseY - lastSY;
+      if (Math.sqrt(dx*dx + dy*dy) >= SAMPLE_PX) {
+        trailPts.push({ x: mouseX, y: mouseY, t: Date.now() });
+        lastSX = mouseX; lastSY = mouseY;
+        if (trailPts.length > 32) trailPts.shift();
+      }
+    }, { passive: true });
+
+    document.addEventListener('mouseleave', () => {
+      reticle.classList.add('hidden');
+      trail.classList.add('hidden');
+    });
+    document.addEventListener('mouseenter', () => {
+      reticle.classList.remove('hidden');
+      trail.classList.remove('hidden');
+    });
+
+    // ── Hover: interactive elements ─────────────────────────────────
+    const SEL = 'a,button,[onclick],.project-card,.blog-card,.contact-link,.modal-close,label,input,textarea';
+    document.querySelectorAll(SEL).forEach(el => {
+      el.addEventListener('mouseenter', () => reticle.classList.add('hover'));
+      el.addEventListener('mouseleave', () => reticle.classList.remove('hover'));
+    });
+
+    // ── Click flash ──────────────────────────────────────────────────
+    document.addEventListener('mousedown', () => reticle.classList.add('click'));
+    document.addEventListener('mouseup',   () => reticle.classList.remove('click'));
+
+    // ── RAF: draw manhattan PCB trace trail ─────────────────────────
+    // Each trail segment routes horizontal-then-vertical like a PCB autorouter.
+    // The dashes animate (flow effect) to look like a live signal.
+    let dashOff = 0;
+    (function drawTrail() {
+      ctx.clearRect(0, 0, trail.width, trail.height);
+      const now = Date.now();
+      dashOff = (now * 0.03) % 8;
+
+      for (let i = 1; i < trailPts.length; i++) {
+        const p = trailPts[i - 1];
+        const q = trailPts[i];
+        const age   = now - p.t;
+        const alpha = Math.max(0, 1 - age / TRAIL_MS);
+        if (alpha < 0.01) continue;
+
+        // Alternate elbow direction by index for variety
+        const elbowX = (i % 2 === 0) ? q.x : p.x;
+        const elbowY = (i % 2 === 0) ? p.y : q.y;
+
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(108,71,255,${(alpha * 0.38).toFixed(3)})`;
+        ctx.lineWidth = 1.4;
+        ctx.setLineDash([5, 3]);
+        ctx.lineDashOffset = -dashOff;
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(elbowX, elbowY); // first leg
+        ctx.lineTo(q.x, q.y);       // second leg
+        ctx.stroke();
+
+        // Draw a tiny via pad at each elbow junction
+        ctx.beginPath();
+        ctx.setLineDash([]);
+        ctx.arc(elbowX, elbowY, 2, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(108,71,255,${(alpha * 0.55).toFixed(3)})`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+      ctx.setLineDash([]);
+
+      requestAnimationFrame(drawTrail);
+    })();
+  })();
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  reveals.forEach(r => r.classList.add('will-animate'));
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        e.target.querySelectorAll('.skill-fill').forEach(b => b.classList.add('animated'));
+      }
+    });
+  }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
+  reveals.forEach(r => observer.observe(r));
+
+  // Fallback: reveal all after 900ms if observer never fires
+  setTimeout(() => {
+    reveals.forEach(r => {
+      r.classList.add('visible');
+      r.querySelectorAll('.skill-fill').forEach(b => b.classList.add('animated'));
+    });
+  }, 900);
+
+  // Also trigger skill bars if already visible
+  document.querySelectorAll('.skill-fill').forEach(b => {
+    const bar = b.closest('.reveal');
+    if (!bar) b.classList.add('animated');
+  });
+
+  // Modals
+  function openModal(id) {
+    document.getElementById('modal-' + id).classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+    document.body.style.overflow = '';
+  }
+
+  // Close modal on overlay backdrop click
+  document.querySelectorAll('.modal-overlay').forEach(m => {
+    m.addEventListener('click', (e) => {
+      if (e.target === m) closeModal();
+    });
+  });
+
+  // Close modal on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
+</script>
 </body>
 </html>
