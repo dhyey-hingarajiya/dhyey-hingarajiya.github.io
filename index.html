@@ -989,14 +989,46 @@
     #cursor-reticle.hover .cur-label { opacity: 0.75; }
     #cursor-reticle.click .cur-label { opacity: 0; }
   }
-  /* ─── HIDE CURSOR ON TOUCH DEVICES ─── */
-@media (pointer: coarse) {
-  #cursor-trail,
-  #cursor-reticle {
-    display: none !important;
-  }
+  /* New Hero Layout Container */
+.hero-content-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  width: 100%;
+}
 
-  * { cursor: auto !important; }
+.hero-text-side {
+  flex: 1;
+}
+
+.hero-image-side {
+  flex-shrink: 0;
+  opacity: 0;
+  animation: fadeUp 0.6s 0.5s forwards;
+}
+
+.hero-portrait {
+  width: clamp(450px, 25vw, 700px); /* Responsive sizing */
+  height: auto;
+  border-radius: 50%; /* Keeps it circular */
+  filter: grayscale(20%); /* Optional: fits the technical aesthetic */
+  transition: transform 0.3s ease;
+}
+
+.hero-portrait:hover {
+  transform: scale(1.02);
+  border-color: var(--green);
+}
+
+/* Fix for mobile - stacks them vertically */
+@media (max-width: 900px) {
+  .hero-content-wrapper {
+    flex-direction: column-reverse;
+    text-align: center;
+    gap: 24px;
+  }
+  .hero-tag { justify-content: center; }
 }
 </style>
 </head>
@@ -1077,75 +1109,41 @@
 </nav>
 
 <!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
-<div id="hero" style="position:relative;">
+<div id="hero">
+  <svg class="hero-traces" ...> ... </svg>
 
-  <!-- PCB traces SVG decoration -->
-  <svg class="hero-traces" viewBox="0 0 500 600" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <path d="M500 100 L380 100 L380 180 L300 180 L300 280 L220 280 L220 380 L140 380 L140 460 L60 460" stroke="#c5b8f7" stroke-width="2"/>
-    <path d="M500 200 L420 200 L420 300 L340 300 L340 400 L260 400" stroke="#d4caf9" stroke-width="2"/>
-    <path d="M500 350 L460 350 L460 260 L380 260 L380 160" stroke="#bfb1f5" stroke-width="2"/>
-    <path d="M500 450 L440 450 L440 360 L360 360 L360 460 L280 460 L280 500" stroke="#c5b8f7" stroke-width="1.5"/>
-    <circle cx="380" cy="100" r="5" fill="#ddd5f8" stroke="#9b80ef" stroke-width="1"/>
-    <circle cx="300" cy="180" r="4" fill="#ddd5f8" stroke="#9b80ef" stroke-width="1"/>
-    <circle cx="220" cy="280" r="5" fill="#ddd5f8" stroke="#9b80ef" stroke-width="1"/>
-    <circle cx="380" cy="260" r="4" fill="#ddd5f8" stroke="#9b80ef" stroke-width="1"/>
-    <circle cx="460" cy="350" r="5" fill="#a78bfa" stroke="#6c47ff" stroke-width="1" opacity="0.9"/>
-    <circle cx="340" cy="300" r="4" fill="#ddd5f8" stroke="#9b80ef" stroke-width="1"/>
-    <circle cx="140" cy="380" r="5" fill="#ddd5f8" stroke="#9b80ef" stroke-width="1"/>
-    <circle cx="440" cy="450" r="4" fill="#a78bfa" stroke="#6c47ff" stroke-width="1" opacity="0.6"/>
-    <!-- IC chip outline -->
-    <rect x="160" y="220" width="80" height="50" stroke="#c5b8f7" stroke-width="1.5" fill="none"/>
-    <text x="200" y="250" text-anchor="middle" fill="#9b80ef" font-family="Space Mono" font-size="8">IC</text>
-    <!-- pads -->
-    <rect x="155" y="228" width="5" height="6" fill="#ddd5f8"/>
-    <rect x="155" y="238" width="5" height="6" fill="#ddd5f8"/>
-    <rect x="155" y="248" width="5" height="6" fill="#ddd5f8"/>
-    <rect x="240" y="228" width="5" height="6" fill="#ddd5f8"/>
-    <rect x="240" y="238" width="5" height="6" fill="#ddd5f8"/>
-    <rect x="240" y="248" width="5" height="6" fill="#ddd5f8"/>
-    <!-- capacitor symbols -->
-    <line x1="320" y1="180" x2="320" y2="200" stroke="#c5b8f7" stroke-width="1.5"/>
-    <line x1="315" y1="200" x2="325" y2="200" stroke="#6c47ff" stroke-width="2" opacity="0.6"/>
-    <line x1="315" y1="204" x2="325" y2="204" stroke="#6c47ff" stroke-width="2" opacity="0.6"/>
-    <line x1="320" y1="204" x2="320" y2="220" stroke="#c5b8f7" stroke-width="1.5"/>
-    <!-- resistor symbol -->
-    <line x1="70" y1="460" x2="80" y2="460" stroke="#c5b8f7" stroke-width="1.5"/>
-    <rect x="80" y="456" width="20" height="8" stroke="#b8a8f2" stroke-width="1" fill="none"/>
-    <line x1="100" y1="460" x2="110" y2="460" stroke="#c5b8f7" stroke-width="1.5"/>
-    <!-- signal lines -->
-    <path d="M460 200 Q470 200 470 210 Q470 220 480 220 Q490 220 490 230 Q490 240 500 240" stroke="#6c47ff" stroke-width="1" opacity="0.4" stroke-dasharray="4 4"/>
-    <!-- VCC label -->
-    <text x="390" y="95" fill="#9b80ef" font-family="Space Mono" font-size="7">VDD</text>
-    <text x="270" y="295" fill="#9b80ef" font-family="Space Mono" font-size="7">GND</text>
-    <text x="350" y="465" fill="#9b80ef" font-family="Space Mono" font-size="7">CLK</text>
-  </svg>
+  <div class="hero-content-wrapper">
+    <div class="hero-text-side">
+      <div class="hero-tag">
+        <span class="status-dot"></span>
+        Electronics &amp; Communication Engineer
+      </div>
 
-  <div class="hero-tag">
-    <span class="status-dot"></span>
-    Electronics &amp; Communication Engineer
+      <h1 class="hero-name">
+        DHYEY<br><span class="accent">Hingarajiya</span>
+      </h1>
+
+      <p class="hero-title">
+        VLSI<span class="sep">/</span>Embedded Systems<span class="sep">/</span>Signal Processing
+      </p>
+
+      <p class="hero-pitch">
+        I design digital systems <strong>from RTL to physical design</strong> and build signal-processing based embedded applications.
+      </p>
+
+      <div class="hero-actions">
+        <a href="YOUR_GOOGLE_DRIVE_DIRECT_LINK" class="btn-primary">↓ Resume</a>
+        <a href="#projects" class="btn-ghost">Projects</a>
+        <a href="https://github.com/dhyey-hingarajiya" class="btn-ghost" target="_blank">GitHub ↗</a>
+        <a href="#contact" class="btn-ghost">Contact</a>
+      </div>
+    </div>
+
+    <div class="hero-image-side">
+      <img src="HeroIMG.png" alt="Dhyey Hingarajiya" class="hero-portrait">
+    </div>
   </div>
 
-  <h1 class="hero-name">
-    DHYEY<br><span class="accent">Hingarajiya</span>
-  </h1>
-
-  <p class="hero-title">
-    VLSI<span class="sep">/</span>Embedded Systems<span class="sep">/</span>Signal Processing
-  </p>
-
-  <p class="hero-pitch">
-    I design digital systems <strong>from RTL to physical design</strong> and build signal-processing based embedded applications.
-  </p>
-
-  <div class="hero-actions">
-    <a href="https://drive.google.com/file/d/10wR99kdFGOb1ZS6pyiwlSakMgGRg3TbI/view?usp=sharing" class="btn-primary"; return false;">↓ Resume</a>
-    <a href="#projects" class="btn-ghost">Projects</a>
-    <a href="https://github.com/dhyey-hingarajiya" class="btn-ghost" target="_blank">GitHub ↗</a>
-    <a href="#contact" class="btn-ghost">Contact</a>
-  </div>
-<br>
-<br>
-<br>
   <div class="scroll-hint">
     <div class="scroll-line"></div>
     Scroll to explore
